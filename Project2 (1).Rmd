@@ -1,0 +1,255 @@
+---
+title: "Project2"
+output:
+  html_document: default
+  pdf_document: default
+date: "2023-10-04"
+---
+ Group project done by Tilon Bobb and myself.
+ 
+## Libraries
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+## Dataset 1 
+storing csv into data frames
+```{r}
+world_pop_url <- "https://raw.githubusercontent.com/Kingtilon1/DATA607/main/Project2/world_population.csv"
+untidy_world <- data.frame(read.csv(world_pop_url))
+```
+
+using the pivot_longer function to put the year population under one column
+```{r}
+tidy_world <- pivot_longer(untidy_world, cols = 6:13, names_to = "year", values_to = "Population")
+```
+
+create a separate data frame thats holds the total population of each country throughout history, and sort them in decending order to determine which country had the highest population since 1970
+```{r}
+summary_data <- tidy_world %>%
+  group_by(Country.Territory) %>%
+  summarise(total_population = sum(Population))
+summary_data <- summary_data %>%
+  arrange(desc(total_population))
+summary_data
+```
+I can conclude that China, followed by India, then the United states of America had the highest population from 1970 to 2022
+
+**Answwering the suggestion by grouping the data by year, then graphing it** 
+```{r}
+yearly_population_data <- tidy_world %>%
+  group_by(year) %>%
+  summarise(total_population = sum(Population))
+
+ggplot(yearly_population_data, aes(x = year, y = total_population)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Population Trends Over the Years",
+       x = "Year",
+       y = "Total Population")
+```
+
+### Conclusion  for world population data
+I can conclude, based on this information, that the global popolation has moree than doubled from 1970 to 2022
+
+## Dataset 2 Spotify data
+
+```{r}
+most_streamed_spotify_url <- "https://raw.githubusercontent.com/Kingtilon1/DATA607/main/Project2/spotify-2023.csv"
+
+untidy_spotify <- data.frame(read.csv(most_streamed_spotify_url))
+
+## Using Dpylr, I will create a new data frame that includes some of the columns I want to focus on
+
+
+selected_spotify <- untidy_spotify %>%
+  select(track_name, artist.s._name, released_year, released_month, released_day, streams, danceability_., speechiness_.)
+summary(untidy_spotify)
+```
+
+Is there a correlation between the dancebility of a song, and the amount of streams the song has? Lets find out using the scatter plot
+```{r}
+
+selected_spotify <- selected_spotify %>%
+  mutate(streams = as.numeric(streams))
+
+scatter_plot <- ggplot(selected_spotify, aes(x = danceability_., y = streams)) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE, color = "blue") +
+  labs(title = "Non-linear Relationship between Danceability and Streams",
+       x = "Danceability",
+       y = "Streams")
+
+print(scatter_plot)
+```
+ 
+### Conclusion Just visually I can tell that there is indeed, no correlation between dancebility and streams
+
+
+## NBA data 
+```{r}
+NBA_untidy <- "https://raw.githubusercontent.com/Kingtilon1/DATA607/main/Project2/basketball_data.csv"
+
+NBA <- data.frame(read.csv(NBA_untidy))
+
+```
+
+Addressing Mikhails suggestion which said "I would first specify the columns since they are somewhat similar i would use the pivot_longer function to make it easier and then name it seasons and then use the values to specify the points. This would make i much easier for us to look at the data"
+```{r}
+NBA <- pivot_longer(NBA, cols = 3:5, names_to = "seasons", values_to = "Points")
+```
+
+Who averaged the most points from 2019 to 2021?
+```{r}
+average_points <- NBA %>%
+  group_by(Player) %>%
+  summarise(Average_Points = mean(Points))
+
+average_points
+```
+
+## Conclusion
+
+Lebron James averaged the most points from 2019 to 2021 with a total of 2100 points, with Kevin Durant coming in second with 2000 points and Stephen Curry in last with 2019 points. Note that this doesn't reflect the best player because there are many other factors in how many points a player scores such as injuries, sitting out games, load managment, etc.
+
+
+## Dataset 3 Salary Survey Data
+
+Lwin Shwe Salary Survey Week 5 Discussion board
+
+There are 17 variables, some of the variables are free-form text entry that make it a good set to learn about data cleaning and then further analyzing, for instance, some domain expertise can be added to a subset of the data familiar with us, be it country, state, job title or sector knowledge that we find the answer of this questions like How much do salaries differ by gender, race, education, years and level of experience?
+
+```{r}
+untidy_salary <- read.csv("https://raw.githubusercontent.com/MAB592/DATA-607-Projects-/main/Ask%20A%20Manager%20Salary%20Survey%202021%20(Responses).csv")
+
+head(untidy_salary)
+```
+
+Checking the columns names in the data 
+
+```{r}
+column_names <- colnames(untidy_salary)
+print(column_names)
+```
+
+Changing the column names appropriately in the dataset 
+```{r}
+
+columnsuntidy <- untidy_salary%>%
+  rename(
+   "Age Range" = How.old.are.you.,
+    "Industry" = What.industry.do.you.work.in.,
+    "Job Title" = Job.title,
+    "Salary" = What.is.your.annual.salary...You.ll.indicate.the.currency.in.a.later.question..If.you.are.part.time.or.hourly..please.enter.an.annualized.equivalent....what.you.would.earn.if.you.worked.the.job.40.hours.a.week..52.weeks.a.year..,
+    "Bonuses" = How.much.additional.monetary.compensation.do.you.get..if.any..for.example..bonuses.or.overtime.in.an.average.year...Please.only.include.monetary.compensation.here..not.the.value.of.benefits.,
+    "Currency" = Please.indicate.the.currency,
+    "Country" = What.country.do.you.work.in.,
+    "State" = If.you.re.in.the.U.S...what.state.do.you.work.in.,
+    "City" = What.city.do.you.work.in.,
+    "Overall Work Experience" = How.many.years.of.professional.work.experience.do.you.have.overall.,
+    "Relevant Work Experience" = How.many.years.of.professional.work.experience.do.you.have.in.your.field.,
+    "Highest Education Level" = What.is.your.highest.level.of.education.completed.,
+    "Gender" = What.is.your.gender.,
+    "Ethnicity" = What.is.your.race...Choose.all.that.apply..
+  )
+
+head(columnsuntidy)
+```
+
+Selecting the relevant columns to look at in our analysis 
+
+```{r}
+Columns_tidy <- columnsuntidy %>% 
+  select( -c(1,5,9,10,19,20,21,22,23,24))
+head(Columns_tidy)
+```
+
+Checking the different variables in currency since I will focus on looking at the salaries with in the US 
+
+```{r}
+unique(Columns_tidy$'Highest Education Level')
+```
+Checking to see if there are any empty values in Currency  
+
+```{r}
+## Checking to see if there are any empty values in the currency and Currency column 
+
+currency_true_values <- sum(is.na(Columns_tidy$Currency))
+salary_true_values <- sum(is.na(Columns_tidy$Salary))
+print(currency_true_values)
+print(salary_true_values)
+```
+
+Converting Salary from a character string to a numeric table
+
+```{r}
+## Converting the string column to a numeric table in my dataset 
+
+Columns_tidy$Salary <- as.numeric(gsub(",", "", Columns_tidy$Salary))
+
+print(Columns_tidy)
+```
+
+Using some feature engineering to look at possible errors in the data. We know that the minimum wage in the US is about $15,000 annually for workers working an average of 40 hours a week.Therefore, we will take out salaries below this range. Also I will be taking out all empty values and 0's in the dataset. 
+
+```{r}
+USA_Data <- Columns_tidy %>%
+  filter(Currency == "USD", as.numeric(Salary) >= 15000)
+
+USA_Data<- na.omit(USA_Data[!apply(is.na(USA_Data) | USA_Data == 0, 1, any), ])
+print(USA_Data)
+```
+
+Looking at the average salary by age 
+
+```{r}
+average_salary_by_age <- USA_Data %>%
+  group_by(`Age Range`) %>%
+  summarise(AverageSalary = mean(Salary),
+            MedianSalary = median(Salary))
+
+ggplot(average_salary_by_age, aes(x = `Age Range`, y = AverageSalary)) +
+  geom_bar(stat = "identity",) +
+  labs(x = "Age Range", y = "Average Salary")
+
+print(average_salary_by_age)
+```
+Looking at salary based on Gender
+
+```{r}
+average_salary_by_Gender <- USA_Data %>%
+  filter(Gender %in% c("Man", "Woman")) %>%
+  group_by(Gender) %>%
+  summarise(AverageSalary = mean(Salary),
+            MedianSalary = median(Salary))
+
+
+ggplot(average_salary_by_Gender, aes(x = Gender, y = AverageSalary)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Gender", y = "Average Salary")
+
+print(average_salary_by_Gender)
+```
+
+
+Looking at Salary based on Education 
+
+```{r}
+average_salary_by_education <- USA_Data %>%
+  filter(`Highest Education Level` %in% c("Master's degree", "College degree", "PhD", "Some college", "High School", "Professional degree (MD, JD, etc.)")) %>%
+  group_by(`Highest Education Level`) %>%
+  summarise(AverageSalary = mean(Salary),
+            MedianSalary = median(Salary))
+
+ggplot(average_salary_by_education, aes(x = `Highest Education Level`, y = AverageSalary)) +
+  geom_bar(stat = "identity",) +
+  labs(x = "Highest Education Level", y = "Average Salary")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+print(average_salary_by_education)
+```
+## Conclusion 
+
+In cleaning and organizing my data to look at the salaries in the US we can see that by age groups 35-54 have about the same average salaries. when looking at genders we can see on average that men out earn women on average. Finally looking at education level we can see that the more educated a person is, the more the average salary increases in the US. We can see that specialized professional degrees pay the most on average. 
