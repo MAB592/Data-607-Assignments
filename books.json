@@ -1,0 +1,19 @@
+{
+    "books": [
+        {
+            "title": "Data Science for Business: What You Need to Know about Data Mining and Data-Analytic Thinking",
+            "author": "Tom Fawcett",
+            "published_year": "2013"
+        },
+        {
+            "title": "Calculus",
+            "author": "Larson, Ron; Edwards, Bruce H",
+            "published_year": "2005"
+        },
+        {
+            "title": "Introductory Econometrics: A Modern Approach",
+            "author": "Jeffrey Wooldridge",
+            "published_year": "2012"
+        }
+    ]
+}
