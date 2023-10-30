@@ -1,0 +1,77 @@
+---
+title: "Week 9 Assignment"
+author: "Mikhail Broomes"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+
+Loading in my libraries
+
+```{r cars}
+library(httr2)
+library(tidyverse)
+library(jsonlite)
+```
+
+## Requesting URL 
+
+Requesting the url using the API key to use the API for the world top stories
+
+```{r}
+url <- "https://api.nytimes.com/svc/topstories/v2/world.json?api-key=89hiISQwL7JuDOLqsrrno7ASzC8X3fxv"
+req <- request(url)
+req
+```
+
+Checking the status to make sure there is a connection 
+
+```{r pressure, echo=TRUE}
+resp <- req_perform(req)
+resp
+
+```
+
+```{r}
+resp %>% resp_content_type()
+
+```
+
+Creating the data as a dataframe 
+
+```{r}
+dat <- fromJSON(url) %>% 
+  as.data.frame()
+dat
+```
+
+# Cleaning Data 
+
+Getting the column names to only take out the relevant data 
+```{r}
+colnames(dat)
+```
+Using dplyr to get the data 
+```{r}
+news <- dat %>% 
+  select("results.title","results.section","results.byline" )
+head(news)
+```
+Changing the titles 
+```{r}
+news_final <- news %>% 
+  rename("Article Name" = results.title,
+         "Writer" = results.byline,
+         "Section" = results.section
+         )
+news_final
+```
+
