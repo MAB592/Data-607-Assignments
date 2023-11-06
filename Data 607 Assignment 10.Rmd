@@ -1,0 +1,134 @@
+---
+title: "Data 607 Week 10 assignment"
+author: "Mikhail Broomes"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+library(tidytext)
+library(tidyverse)
+library(syuzhet)
+library(textdata)
+library(janeaustenr)
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=TRUE}
+
+get_sentiments("afinn")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+get_sentiments("bing")
+```
+
+
+```{r}
+get_sentiments("nrc")
+```
+
+
+```{r}
+
+tidy_books <- austen_books() %>%
+  group_by(book) %>%
+  mutate(
+    linenumber = row_number(),
+    chapter = cumsum(str_detect(text, 
+                                regex("^chapter [\\divxlc]", 
+                                      ignore_case = TRUE)))) %>%
+  ungroup() %>%
+  unnest_tokens(word, text)
+
+```
+
+
+```{r}
+nrc_joy <- get_sentiments("nrc") %>% 
+  filter(sentiment == "joy")
+
+tidy_books %>%
+  filter(book == "Emma") %>%
+  inner_join(nrc_joy) %>%
+  count(word, sort = TRUE)
+```
+
+
+## Using a different sentiment analysis 
+
+```{r}
+get_sentiments("loughran")
+```
+
+
+## Using sentiment analysis for a different book called Persuasion
+
+
+
+```{r}
+nrc_joy <- get_sentiments("nrc") %>% 
+  filter(sentiment == "joy")
+
+tidy_books %>%
+  filter(book == "Emma") %>%
+  inner_join(nrc_joy) %>%
+  count(word, sort = TRUE)
+```
+
+
+Finding the positive sentiment number of the dataset
+
+```{r}
+
+loughran_positive <- get_sentiments("loughran") %>% 
+  filter(sentiment == "positive")
+
+Persuasion <- tidy_books %>%
+  filter(book == "Persuasion") %>%
+  inner_join(loughran_positive) %>%
+  count(word, sort = TRUE)
+
+sum_positive <- sum(Persuasion$n)
+
+print(sum_positive)
+```
+Finding the negative sentiment number of the dataset
+
+```{r}
+loughran_negative <- get_sentiments("loughran") %>% 
+  filter(sentiment == "negative")
+
+Persuasion2 <- tidy_books %>%
+  filter(book == "Persuasion") %>%
+  inner_join(loughran_negative) %>%
+  count(word, sort = TRUE)
+
+sum_negative <- sum(Persuasion2$n)
+
+print(sum_negative)
+```
+## Conclusion
+
+The over all sentiment seems to be somewhat neutral with just slightly edging out in the negative sentiment.
+
+
