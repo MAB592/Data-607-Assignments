@@ -1,0 +1,40 @@
+---
+title: "Recommender Systems"
+author: "Mikhail Broomes"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Analyzing the recommender system of Linkedin
+
+## 1) Perform a Scenario Design analysis as described below.  Consider whether it makes sense for your selected recommender system to perform scenario design twice, once for the organization (e.g. Amazon.com) and once for the organization’s customers.
+
+I choose Linkedin because it is a great platform for connecting job seekers with employers/recruiters. One vital tool in accomplishing these objectives is the LinkedIn Recruiter tool. It aids recruiters and hiring managers in finding the right talent and allows them to pinpoint "talent pools" that are designed to increase the chances of successful hiring.
+
+1. Who are the target users? 
+
+LinkedIn's recommender system enhancements target professionals and job seekers utilizing the platform. These users are seeking various objectives, which include expanding their professional network, discovering appropriate job opportunities and advancing their careers, improving their skills in line with industry trends, and accessing personalized and pertinent professional content and news.
+
+ 2. What are their key goals? 
+ 
+To help users achieve these goals, the recommender system's algorithms will be enhanced to facilitate improved cross-industry networking and connections. Job recommendation algorithms will also be refined to provide more accurate job matches, aligning with user profiles, preferences, and market demand. Furthermore, personalized learning paths and skill development opportunities will be developed based on individual user profiles and industry trends. Additionally, content and news feeds will be customized to cater to users' specific industries, interests, and connections, ultimately increasing engagement and nurturing a more robust professional community on the platform.
+
+
+3. How can I help them accomplish their goals?
+
+To help users achieve their goals, I plan to enhance the recommender system's algorithms, ensuring better industry networking and connections. Improving job recommendation algorithms to accurately match user profiles, preferences, and demand should be a priority. 
+
+
+## 2. Attempt to reverse engineer what you can about the site, from the site interface and any available information that you can find on the Internet or elsewhere.
+
+LinkedIn offers features like user profiles showcasing work history, skills, and education. It helps with networking through connection tools, messaging, endorsements, and job listings for both job seekers and companies. Users can share content, join groups, access learning resources, and companies can use advertising to target specific demographics. The platform focuses on professional networking, career development, and content sharing, powered by algorithms that help with personalized recommendations.
+
+## 3. Include specific recommendations about how to improve the site’s recommendation capabilities going forward. 
+
+To help with the site's recommendations, I think expanding the types of information we use to make suggestions can make them better. Using smarter technology, real-time updates, and listening to what users think will help us give better advice. By making suggestions that match what each person likes, it ca make the system easier to use and more helpful."
